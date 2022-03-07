@@ -30,6 +30,7 @@ protocol PanModalPresenter: AnyObject {
      Presents a view controller that conforms to the PanModalPresentable protocol
      */
     func presentPanModal(_ viewControllerToPresent: PanModalPresentable.LayoutType,
+                         disablesPopoverOniPad: Bool,
                          sourceView: UIView?,
                          sourceRect: CGRect,
                          completion: (() -> Void)?)
