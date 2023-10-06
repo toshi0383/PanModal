@@ -5,7 +5,7 @@
 //  Copyright © 2018 Tiny Speck, Inc. All rights reserved.
 //
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 import UIKit
 
 /**
@@ -31,7 +31,11 @@ extension PanModalPresentable where Self: UIViewController {
         guard let rootVC = rootViewController
             else { return 0}
 
+       #if os(iOS)
         if #available(iOS 11.0, *) { return rootVC.view.safeAreaInsets.top } else { return rootVC.topLayoutGuide.length }
+        #else
+        return 0
+        #endif
     }
 
     /**
@@ -42,8 +46,11 @@ extension PanModalPresentable where Self: UIViewController {
 
        guard let rootVC = rootViewController
             else { return 0}
-
+#if os(iOS)
         if #available(iOS 11.0, *) { return rootVC.view.safeAreaInsets.bottom } else { return rootVC.bottomLayoutGuide.length }
+        #else
+        return 0
+#endif
     }
 
     /**
@@ -101,8 +108,12 @@ extension PanModalPresentable where Self: UIViewController {
             return bottomYPos - height
         case .intrinsicHeight:
             view.layoutIfNeeded()
+#if os(iOS)
             let targetSize = CGSize(width: (presentedVC?.containerView?.bounds ?? UIScreen.main.bounds).width,
                                     height: UIView.layoutFittingCompressedSize.height)
+            #else
+            let targetSize = CGSize.zero
+            #endif
             let intrinsicHeight = view.systemLayoutSizeFitting(targetSize).height
             return bottomYPos - (intrinsicHeight + bottomLayoutOffset)
         }
@@ -112,8 +123,11 @@ extension PanModalPresentable where Self: UIViewController {
 
         guard let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? UIApplication
             else { return nil }
-
+        #if os(iOS)
         return application.keyWindow?.rootViewController
+        #else
+        fatalError()
+        #endif
     }
 
 }
